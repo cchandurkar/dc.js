@@ -19,6 +19,23 @@ var yearlyBubbleChart = dc.bubbleChart('#yearly-bubble-chart');
 var nasdaqCount = dc.dataCount('.dc-data-count');
 var nasdaqTable = dc.dataTable('.dc-data-table');
 
+// Create Trail
+var trail = trails.create()
+    .attr('viz', 'nasdaq-viz')
+    .addControls()
+    .renderTo('#controls');
+
+// Capture Area
+var captureArea = '#viz-capture';
+
+gainOrLossChart.on('filtered', function(chart, filters){
+  trail.capture({
+    chart: '#gain-loss-chart',
+    filters: chart.filters().slice()
+  }, '#gain-loss-chart');
+});
+
+
 // ### Anchor Div for Charts
 /*
 // A div anchor that can be identified by id
@@ -487,7 +504,7 @@ d3.csv('ndx.csv', function (data) {
         // `%filter-count` and `%total-count` are replaced with the values obtained.
         .html({
             some: '<strong>%filter-count</strong> selected out of <strong>%total-count</strong> records' +
-                ' | <a href=\'javascript:dc.filterAll(); dc.renderAll();\'\'>Reset All</a>',
+                ' | <a href=\'javascript:dc.filterAll(); dc.renderAll();\'>Reset All</a>',
             all: 'All records selected. Please click on the graph to apply filters.'
         });
 
