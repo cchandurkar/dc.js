@@ -33,7 +33,7 @@
 
 module.exports = require('./src/js/');
 
-},{"./src/js/":52}],2:[function(require,module,exports){
+},{"./src/js/":53}],2:[function(require,module,exports){
 // UMD header
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
@@ -3379,6 +3379,9 @@ module.exports = (function(){
 }());
 
 },{"./traverser":26,"./tree-node":27}],29:[function(require,module,exports){
+/*! @source http://purl.eligrey.com/github/FileSaver.js/blob/master/FileSaver.js */
+var saveAs=saveAs||function(e){"use strict";if("undefined"==typeof navigator||!/MSIE [1-9]\./.test(navigator.userAgent)){var t=e.document,n=function(){return e.URL||e.webkitURL||e},o=t.createElementNS("http://www.w3.org/1999/xhtml","a"),r="download"in o,i=function(e){var t=new MouseEvent("click");e.dispatchEvent(t)},a=e.webkitRequestFileSystem,c=e.requestFileSystem||a||e.mozRequestFileSystem,u=function(t){(e.setImmediate||e.setTimeout)(function(){throw t},0)},f="application/octet-stream",s=0,d=500,l=function(t){var o=function(){"string"==typeof t?n().revokeObjectURL(t):t.remove()};e.chrome?o():setTimeout(o,d)},v=function(e,t,n){t=[].concat(t);for(var o=t.length;o--;){var r=e["on"+t[o]];if("function"==typeof r)try{r.call(e,n||e)}catch(i){u(i)}}},p=function(e){return/^\s*(?:text\/\S*|application\/xml|\S*\/\S*\+xml)\s*;.*charset\s*=\s*utf-8/i.test(e.type)?new Blob(["﻿",e],{type:e.type}):e},w=function(t,u,d){d||(t=p(t));var w,y,m,S=this,h=t.type,O=!1,R=function(){v(S,"writestart progress write writeend".split(" "))},b=function(){if((O||!w)&&(w=n().createObjectURL(t)),y)y.location.href=w;else{var o=e.open(w,"_blank");void 0==o&&"undefined"!=typeof safari&&(e.location.href=w)}S.readyState=S.DONE,R(),l(w)},g=function(e){return function(){return S.readyState!==S.DONE?e.apply(this,arguments):void 0}},E={create:!0,exclusive:!1};return S.readyState=S.INIT,u||(u="download"),r?(w=n().createObjectURL(t),o.href=w,o.download=u,void setTimeout(function(){i(o),R(),l(w),S.readyState=S.DONE})):(e.chrome&&h&&h!==f&&(m=t.slice||t.webkitSlice,t=m.call(t,0,t.size,f),O=!0),a&&"download"!==u&&(u+=".download"),(h===f||a)&&(y=e),c?(s+=t.size,void c(e.TEMPORARY,s,g(function(e){e.root.getDirectory("saved",E,g(function(e){var n=function(){e.getFile(u,E,g(function(e){e.createWriter(g(function(n){n.onwriteend=function(t){y.location.href=e.toURL(),S.readyState=S.DONE,v(S,"writeend",t),l(e)},n.onerror=function(){var e=n.error;e.code!==e.ABORT_ERR&&b()},"writestart progress write abort".split(" ").forEach(function(e){n["on"+e]=S["on"+e]}),n.write(t),S.abort=function(){n.abort(),S.readyState=S.DONE},S.readyState=S.WRITING}),b)}),b)};e.getFile(u,{create:!1},g(function(e){e.remove(),n()}),g(function(e){e.code===e.NOT_FOUND_ERR?n():b()}))}),b)}),b)):void b())},y=w.prototype,m=function(e,t,n){return new w(e,t,n)};return"undefined"!=typeof navigator&&navigator.msSaveOrOpenBlob?function(e,t,n){return n||(e=p(e)),navigator.msSaveOrOpenBlob(e,t||"download")}:(y.abort=function(){var e=this;e.readyState=e.DONE,v(e,"abort")},y.readyState=y.INIT=0,y.WRITING=1,y.DONE=2,y.error=y.onwritestart=y.onprogress=y.onwrite=y.onabort=y.onerror=y.onwriteend=null,m)}}("undefined"!=typeof self&&self||"undefined"!=typeof window&&window||this.content);"undefined"!=typeof module&&module.exports?module.exports.saveAs=saveAs:"undefined"!=typeof define&&null!==define&&null!=define.amd&&define([],function(){return saveAs});
+},{}],30:[function(require,module,exports){
 // Simple, stupid "background"/"background-image" value parser that just aims at exposing the image URLs
 "use strict";
 
@@ -3490,7 +3493,7 @@ exports.serialize = function (parsedBackground) {
     return backgroundLayers.join(', ');
 };
 
-},{"./cssSupport":30}],30:[function(require,module,exports){
+},{"./cssSupport":31}],31:[function(require,module,exports){
 "use strict";
 
 var cssom = require('cssom');
@@ -3571,7 +3574,7 @@ exports.changeFontFaceRuleSrc = function (cssRules, rule, newSrc) {
     exports.exchangeRule(cssRules, rule, newRuleText);
 };
 
-},{"cssom":23}],31:[function(require,module,exports){
+},{"cssom":23}],32:[function(require,module,exports){
 "use strict";
 
 var util = require('./util'),
@@ -3817,7 +3820,7 @@ exports.inlineReferences = function (doc, options) {
     });
 };
 
-},{"./cssSupport":30,"./inlineCss":32,"./inlineImage":33,"./inlineScript":34,"./util":35}],32:[function(require,module,exports){
+},{"./cssSupport":31,"./inlineCss":33,"./inlineImage":34,"./inlineScript":35,"./util":36}],33:[function(require,module,exports){
 "use strict";
 
 var ayepromise = require('ayepromise'),
@@ -4166,7 +4169,7 @@ exports.loadAndInlineCSSResourcesForRules = function (cssRules, options) {
     });
 };
 
-},{"./backgroundValueParser":29,"./cssSupport":30,"./util":35,"ayepromise":2,"css-font-face-src":4}],33:[function(require,module,exports){
+},{"./backgroundValueParser":30,"./cssSupport":31,"./util":36,"ayepromise":2,"css-font-face-src":4}],34:[function(require,module,exports){
 "use strict";
 
 var util = require('./util');
@@ -4223,7 +4226,7 @@ exports.inline = function (doc, options) {
     }));
 };
 
-},{"./util":35}],34:[function(require,module,exports){
+},{"./util":36}],35:[function(require,module,exports){
 "use strict";
 
 var util = require('./util');
@@ -4276,7 +4279,7 @@ exports.inline = function (doc, options) {
     }));
 };
 
-},{"./util":35}],35:[function(require,module,exports){
+},{"./util":36}],36:[function(require,module,exports){
 "use strict";
 
 var url = require('url'),
@@ -4476,7 +4479,7 @@ exports.memoize = function (func, hasher, memo) {
     };
 };
 
-},{"ayepromise":2,"url":42}],36:[function(require,module,exports){
+},{"ayepromise":2,"url":43}],37:[function(require,module,exports){
 (function (global){
 /*! https://mths.be/punycode v1.3.2 by @mathias */
 ;(function(root) {
@@ -5010,7 +5013,7 @@ exports.memoize = function (func, hasher, memo) {
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -5096,7 +5099,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -5183,13 +5186,13 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":37,"./encode":38}],40:[function(require,module,exports){
+},{"./decode":38,"./encode":39}],41:[function(require,module,exports){
 /*! rasterizeHTML.js - v1.2.0 - 2015-10-03
 * http://www.github.com/cburgmer/rasterizeHTML.js
 * Copyright (c) 2015 Christoph Burgmer; Licensed MIT */
@@ -6476,7 +6479,7 @@ return rasterizeHTML;
 
 }));
 
-},{"ayepromise":2,"css-mediaquery":6,"inlineresources":31,"sane-domparser-error":41,"url":42,"xmlserializer":43}],41:[function(require,module,exports){
+},{"ayepromise":2,"css-mediaquery":6,"inlineresources":32,"sane-domparser-error":42,"url":43,"xmlserializer":44}],42:[function(require,module,exports){
 'use strict';
 
 var innerXML = function (node) {
@@ -6556,7 +6559,7 @@ exports.failOnParseError = function (doc) {
     return doc;
 };
 
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -7265,7 +7268,7 @@ function isNullOrUndefined(arg) {
   return  arg == null;
 }
 
-},{"punycode":36,"querystring":39}],43:[function(require,module,exports){
+},{"punycode":37,"querystring":40}],44:[function(require,module,exports){
 var removeInvalidCharacters = function (content) {
     // See http://www.w3.org/TR/xml/#NT-Char for valid XML 1.0 characters
     return content.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, '');
@@ -7384,7 +7387,7 @@ exports.serializeToString = function (document) {
     return removeInvalidCharacters(nodeTreeToXHTML(document));
 };
 
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 module.exports = (function(window, $){
 
   // Flag bad practises
@@ -7455,7 +7458,7 @@ module.exports = (function(window, $){
 
 }(window, window.jQuery));
 
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 
 module.exports = (function(document, $){
 
@@ -7500,7 +7503,7 @@ module.exports = (function(document, $){
 
 }(window.document, window.jQuery));
 
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 module.exports = (function($, document){
   return {
 
@@ -7523,7 +7526,7 @@ module.exports = (function($, document){
   };
 }(window.jQuery, window.document));
 
-},{"./controlBox":44,"./gistControl":45,"./loadControl":47,"./saveControl":48,"./snapshotControl":49}],47:[function(require,module,exports){
+},{"./controlBox":45,"./gistControl":46,"./loadControl":48,"./saveControl":49,"./snapshotControl":50}],48:[function(require,module,exports){
 
 module.exports = (function(document, $){
 
@@ -7568,7 +7571,9 @@ module.exports = (function(document, $){
 
 }(window.document, window.jQuery));
 
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
+
+var fileSaver = require('filesaver.js/FileSaver.min.js');
 
 module.exports = (function(document, $){
 
@@ -7602,7 +7607,13 @@ module.exports = (function(document, $){
 
     // Add Listener
     $(document).on('click', '#' + ctrl.attr('id'), function(){
-      alert("Save Clicked");
+
+      // Create a Blob of `trail.export()`
+      var blob = new Blob([JSON.stringify(trail.export(), null, 2)], {type: "text/json;charset=utf-8"});
+
+      // Save
+      fileSaver.saveAs(blob, "trail-"+trail._trailId+".json");
+
     });
 
     return wrapper;
@@ -7613,7 +7624,7 @@ module.exports = (function(document, $){
 
 }(window.document, window.jQuery));
 
-},{}],49:[function(require,module,exports){
+},{"filesaver.js/FileSaver.min.js":29}],50:[function(require,module,exports){
 
 module.exports = (function(document, $){
 
@@ -7670,7 +7681,7 @@ module.exports = (function(document, $){
 
 }(window.document, window.jQuery));
 
-},{}],50:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 module.exports = (function(){
   return function() {
     function s1() {
@@ -7683,7 +7694,7 @@ module.exports = (function(){
   };
 }());
 
-},{}],51:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 
 module.exports = (function(){
   return {
@@ -7691,7 +7702,7 @@ module.exports = (function(){
   };
 }());
 
-},{"./guid":50}],52:[function(require,module,exports){
+},{"./guid":51}],53:[function(require,module,exports){
 
 var Trail = require('./trail');
 
@@ -7750,7 +7761,7 @@ module.exports = trails = (function(_window, _$) {
 
 }(window, window.jQuery));
 
-},{"./trail":54}],53:[function(require,module,exports){
+},{"./trail":55}],54:[function(require,module,exports){
 var helpers = require('./helpers');
 var rasterizeHTML = require('rasterizehtml');
 
@@ -7909,7 +7920,7 @@ module.exports = (function(){
 
 }());
 
-},{"./helpers":51,"rasterizehtml":40}],54:[function(require,module,exports){
+},{"./helpers":52,"rasterizehtml":41}],55:[function(require,module,exports){
 var controls = require('./controls');
 var helpers = require('./helpers');
 var snapshot = require('./snapshot');
@@ -8262,16 +8273,12 @@ module.exports = (function() {
 
   var addSnapshotToGallery = function(trail, snapshot) {
 
-    console.log("addSnapshotToGallery", snapshot);
-
     // Create Image element and append to gallery
     var img = $("<img>", {
       id: 'thumb-' + snapshot._snapshotId,
       class: 'trails-thumbnail',
       src: snapshot._thumbnail
     }).appendTo(trail._controlBox.find('.trails-thumbnail-gallery'));
-
-    console.log("adding image", img);
 
   };
 
@@ -8283,4 +8290,4 @@ module.exports = (function() {
 
 }());
 
-},{"./controls":46,"./helpers":51,"./snapshot":53,"data-tree":25}]},{},[1]);
+},{"./controls":47,"./helpers":52,"./snapshot":54,"data-tree":25}]},{},[1]);
