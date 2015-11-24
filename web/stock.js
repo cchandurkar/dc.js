@@ -22,7 +22,7 @@ var nasdaqTable = dc.dataTable('.dc-data-table');
 // Create Trail
 var trail = trails.create()
     .attr('viz', 'nasdaq-viz')
-    .addControls()
+    .addControls(['saveControl', 'loadControl'])
     .renderTo('#controls');
 
 // Capture Area

@@ -7518,6 +7518,10 @@ module.exports = (function($, document){
       snapshotControl: require('./snapshotControl')
     },
 
+    all: function(){
+      return Object.keys(this.list);
+    },
+
     // Checks if control was rendered
     isAttached: function(control){
       return $.contains(document, control);
@@ -7551,16 +7555,34 @@ module.exports = (function(document, $){
       class: 'trails-control-wrapper',
     });
 
-    // Create Control
+    // Create Control Button
     var ctrl = $("<div>", {
       id: '' + trail._trailId + '-control-load',
       class: 'trails-control',
       text: 'Load JSON'
     }).appendTo(wrapper);
 
-    // Add Listener
+    // Create Control Button
+    var input = $("<input>", {
+      id: '' + trail._trailId + '-control-load-input',
+      type: 'file'
+    }).hide().appendTo(wrapper);
+
+    // Add Click Listener
     $(document).on('click', '#' + ctrl.attr('id'), function(){
-      alert("Load Clicked");
+      $('#'+trail._trailId + '-control-load-input').click();
+    });
+
+    // Add Listener
+    $(document).on('change', '#' + input.attr('id'), function(event){
+      var file = event.target.files[0];
+      var reader = new FileReader();
+      reader.onload = function(e) {
+       var fileContents = e.target.result;
+       var dataObject = JSON.parse(fileContents);
+       trail.loadFromJSON(dataObject);
+     };
+      reader.readAsText(file);
     });
 
     return wrapper;
@@ -8263,7 +8285,61 @@ module.exports = (function() {
    * @method saveToJSON
    * @kind member
    */
-  Trail.prototype.loadJSON = function(json) {
+  Trail.prototype.loadFromJSON = function(data) {
+
+    // Check If trail is valid
+    if(!data) return null;
+    else if(data && (typeof data !== 'object' || !data.trailId))
+      throw new Error("Invalid trail data", data);
+
+    // Override Properties
+    this._trailId = data.trailId;
+    this._initiatedAt = data.initiatedAt;
+    this._lastExportedAt = data.lastExportedAt;
+    this._attrs = data.attrs;
+
+    // Reset Data tree
+    this._dataTree = dataTree.create();
+
+    // Controls
+    var ctrls = data.controls.options && Array.isArray(data.controls) ? data.controls.options : controls.all();
+    this.addControls(ctrls);
+
+    // Re-render
+    this.renderTo(data.controls.renderTo);
+
+    // Hold `this`
+    var thiss = this;
+
+    // Import Snapshots
+    var importSnap = function(dataObject){
+
+      // Create Snapshot
+      var snap = snapshot.createFrom(dataObject);
+
+      // Insert in a Tree
+      // Insert in Data Tree
+      var snapNode = null;
+      if(thiss._dataTree._currentNode){
+        snapNode = thiss._dataTree.insertTo({
+          'id': snap._snapshotId,
+          'snapshot': snap
+        });
+      } else {
+        snapNode = thiss._dataTree.insert({
+          'id': snap._snapshotId,
+          'snapshot': snap
+        });
+      }
+
+
+      // For All Children
+      dataObject.children.forEach(function(_child){
+        importSnap(_child);
+      });
+
+      return snapNode;
+    };
 
   };
 
