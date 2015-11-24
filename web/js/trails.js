@@ -3096,6 +3096,31 @@ module.exports = (function(){
   }
 
   /**
+   * Checks whether tree is empty.
+   *
+   * @method isEmpty
+   * @memberof Tree
+   * @instance
+   * @return {boolean} whether tree is empty.
+   */
+  Tree.prototype.isEmpty = function(){
+    return this._rootNode === null && this._currentNode === null;
+  };
+
+  /**
+   * Empties the tree. Removes all nodes from tree.
+   *
+   * @method pruneAllNodes
+   * @memberof Tree
+   * @instance
+   * @return {@link Tree} empty tree.
+   */
+  Tree.prototype.pruneAllNodes = function(){
+    if(this._rootNode && this._currentNode) this.trimBranchFrom(this._rootNode);
+    return this;
+  };
+
+  /**
    * Creates a {@link TreeNode} that contains the data provided and insert it in a tree.
    * New node gets inserted to the `_currentNode` which updates itself upon every insertion and deletion.
    *
@@ -3140,47 +3165,60 @@ module.exports = (function(){
    * @param {boolean} trim - indicates whether to remove entire branch from the specified node.
    */
   Tree.prototype.remove = function(node, trim){
+    if(trim || node === this._rootNode){
+
+      // Trim Entire branch
+      this.trimBranchFrom(node);
+
+    } else {
+
+      // Upate children's parent to grandparent
+      node._childNodes.forEach(function(_child){
+        _child._parentNode = node._parentNode;
+        node._parentNode._childNodes.push(_child);
+      });
+
+      // Delete itslef from parent child array
+      node._parentNode._childNodes.splice(node._parentNode._childNodes.indexOf(node), 1);
+
+      // Update Current Node
+      this._currentNode = node._parentNode;
+
+      // Clear Child Array
+      node._childNodes = [];
+      node._parentNode = null;
+      node._data = null;
+
+    }
+  };
+
+  /**
+   * Remove an entire branch starting with specified node.
+   *
+   * @method trimBranchFrom
+   * @memberof Tree
+   * @instance
+   * @param {object} node - {@link TreeNode} from which entire branch has to be removed.
+   */
+  Tree.prototype.trimBranchFrom = function(node){
 
     // Hold `this`
     var thiss = this;
 
-    // if removeChildren ; remove all children recursively
-    if(trim){
-      node._childNodes.forEach(function(_child){
-        thiss.remove(_child, removeChildren);
-      });
-    } else {
-
-      // Check If node has parent node
-      if(node._parentNode){
-
-        // Take all child nodes and put in parent's _childNodes
-        node._childNodes.forEach(function(_child){
-          _child._parentNode = node._parentNode;
-          node._parentNode._childNodes.push(_child);
-        });
-
-        // Remove node from parent's _childNodes
-        var index = node._parentNode._childNodes.indexOf(node);
-        node._parentNode._childNodes.splice(index, 1);
-
-      } else {
-
-        // Remove a rootNode
-        this._rootNode = null;
-        this._currentNode = null;
-
-      }
-
-      // Empty nodes `_childNodes`
+    // trim brach recursively
+    (function recur(node){
+      node._childNodes.forEach(recur);
       node._childNodes = [];
+      node._data = null;
+    }(node));
 
+    // Update Current Node
+    if(node._parentNode){
+      node._parentNode._childNodes.splice(node._parentNode._childNodes.indexOf(node), 1);
+      thiss._currentNode = node._parentNode;
+    } else {
+      thiss._rootNode = thiss._currentNode = null;
     }
-
-    // Set parent and data to null
-    node._parentNode = null;
-    node._data = null;
-
   };
 
   /**
@@ -3346,6 +3384,11 @@ module.exports = (function(){
     if(!criteria || typeof criteria !== 'function')
     throw new Error('Export criteria not specified');
 
+    // Check if rootNode is not null
+    if(!this._rootNode){
+      return null;
+    }
+
     // Export every node recursively
     var exportRecur = function(node){
       var exported = node.matchCriteria(criteria);
@@ -3356,11 +3399,100 @@ module.exports = (function(){
         node._childNodes.forEach(function(_child){
           exported.children.push(exportRecur(_child));
         });
+
         return exported;
       }
     };
 
     return exportRecur(this._rootNode);
+  };
+
+
+  /**
+   * Imports the JSON data into a tree using the criteria provided.
+   * A property indicating the nesting of object must be specified.
+   *
+   * @method import
+   * @memberof Tree
+   * @instance
+   * @param {object} data - JSON data that has be imported
+   * @param {string} childProperty - Name of the property that holds the nested data.
+   * @param {Tree~criteria} criteria - Callback function that receives data in parameter
+   * and MUST return a formatted data that has to be imported in a tree.
+   * @return {object} - {@link Tree}.
+   * @example
+   *
+   * var data = {
+   *   "trailId": "h2e67d4ea-f85f40e2ae4a06f4777864de",
+   *   "initiatedAt": 1448393492488,
+   *   "snapshots": {
+   *      "snapshotId": "b3d132131-213c20f156339ea7bdcb6273",
+   *      "capturedAt": 1448393495353,
+   *      "thumbnail": "data:img",
+   *      "children": [
+   *       {
+   *        "snapshotId": "yeb7ab27c-b36ff1b04aefafa9661243de",
+   *        "capturedAt": 1448393499685,
+   *        "thumbnail": "data:image/",
+   *        "children": [
+   *          {
+   *            "snapshotId": "a00c9828f-e2be0fc4732f56471e77947a",
+   *            "capturedAt": 1448393503061,
+   *            "thumbnail": "data:image/png;base64",
+   *            "children": []
+   *          }
+   *        ]
+   *      }
+   *     ]
+   *   }
+   * };
+   *
+   *  // Import
+   *  // This will result in a tree having nodes containing `id` and `thumbnail` as data
+   *  tree.import(data, 'children', function(nodeData){
+   *    return {
+   *      id: nodeData.snapshotId,
+   *      thumbnail: nodeData.thumbnail
+   *     }
+   *  });
+   *
+   */
+  Tree.prototype.import = function(data, childProperty, criteria){
+
+    // Empty all tree
+    if(this._rootNode) this.trimBranchFrom(this._rootNode);
+
+    // Set Current Node to root node as null
+    this._currentNode = this._rootNode = null;
+
+    // Hold `this`
+    var thiss = this;
+
+    // Import recursively
+    (function importRecur(node, recurData){
+
+      // Format data from given criteria
+      var _data = criteria(recurData);
+
+      // Create Root Node
+      if(!node){
+        node = thiss.insert(_data);
+      } else {
+        node = thiss.insertToNode(node, _data);
+      }
+
+      // For Every Child
+      recurData[childProperty].forEach(function(_child){
+        importRecur(node, _child);
+      });
+
+    }(this._rootNode, data));
+
+    // Set Current Node to root node
+    this._currentNode = this._rootNode;
+
+    return this;
+
   };
 
   /**
@@ -3371,8 +3503,6 @@ module.exports = (function(){
    * @callback criteria
    * @param data {object} - data of particular {@link TreeNode}
    */
-
-
 
   return Tree;
 
@@ -7814,8 +7944,13 @@ module.exports = (function(){
     }
 
     // Create new snapshot and override attributes
-    var snapshot = new Snapshot();
-    return snapshot;
+    var snap = new Snapshot();
+    snap._snapshotId = data.snapshotId;
+    snap._capturedAt = data.capturedAt;
+    snap._thumbnail = data.thumbnail;
+    snap._vizData = data.vizData;
+
+    return snap;
 
   };
 
@@ -8308,38 +8443,14 @@ module.exports = (function() {
     // Re-render
     this.renderTo(data.controls.renderTo);
 
-    // Hold `this`
-    var thiss = this;
-
-    // Import Snapshots
-    var importSnap = function(dataObject){
-
-      // Create Snapshot
-      var snap = snapshot.createFrom(dataObject);
-
-      // Insert in a Tree
-      // Insert in Data Tree
-      var snapNode = null;
-      if(thiss._dataTree._currentNode){
-        snapNode = thiss._dataTree.insertTo({
-          'id': snap._snapshotId,
-          'snapshot': snap
-        });
-      } else {
-        snapNode = thiss._dataTree.insert({
-          'id': snap._snapshotId,
-          'snapshot': snap
-        });
-      }
-
-
-      // For All Children
-      dataObject.children.forEach(function(_child){
-        importSnap(_child);
-      });
-
-      return snapNode;
-    };
+    // Import data in a tree.
+    this._dataTree.import(data.snapshots, 'children', function(nodeData){
+      var snap = snapshot.createFrom(nodeData);
+      return {
+        id: snap._snapshotId,
+        snapshot: snap
+      };
+    });
 
   };
 
