@@ -7564,17 +7564,24 @@ module.exports = (function(window, $){
       class: 'trails-controls-container'
     }).appendTo(controlsBoxInnerWrapper);
 
+
     // Create thumbnail gallery container
     var thumbnailGalleryContainer = $("<div>", {
-      id: '' + trail._trailId + '-thumbnail-gallery-gallery',
+      id: '' + trail._trailId + '-thumbnail-gallery-container',
       class: 'trails-thumbnail-gallery-container'
     }).appendTo(controlsBoxInnerWrapper);
+
+    // Create thumbnail gallery container
+    var thumbnailGalleryOverflowContainer = $("<div>", {
+      id: '' + trail._trailId + '-thumbnail-gallery-overflow-container',
+      class: 'trails-thumbnail-gallery-overflow-container'
+    }).appendTo(thumbnailGalleryContainer);
 
     // Create thumbnail gallery
     var thumbnailGallery = $("<div>", {
       id: '' + trail._trailId + '-thumbnail-gallery',
       class: 'trails-thumbnail-gallery'
-    }).appendTo(thumbnailGalleryContainer);
+    }).appendTo(thumbnailGalleryOverflowContainer);
 
     return box;
 
@@ -7817,12 +7824,27 @@ module.exports = (function(document, $){
 
     // Add Listener on ctrlPrev
     $(document).on('click', '#' + ctrlPrev.attr('id'), function(){
-      alert("Prev Clicked");
+      if(trail._currentNode){
+        var parentNode = trail._currentNode._parentNode;
+        if(parentNode){
+          console.log("id: ", parentNode._data.id);
+          trail._currentNode = parentNode;
+          trail.loadSnapshot(trail._currentNode._data.snapshot);
+        }
+      }
     });
 
     // Add Listener on ctrlNext
     $(document).on('click', '#' + ctrlNext.attr('id'), function(){
-      alert("Next Clicked");
+      if(trail._currentNode){
+        var childNodes = trail._currentNode._childNodes;
+        if(childNodes.length){
+
+          trail._currentNode = childNodes[childNodes.length - 1];
+          console.log("id: ", trail._currentNode._data.id);
+          trail.loadSnapshot(trail._currentNode._data.snapshot);
+        }
+      }
     });
 
     return wrapper;
@@ -8202,14 +8224,22 @@ module.exports = (function() {
    */
   Trail.prototype.capture = function(data, selector, callback) {
 
+    // Check If is Waiting
+    if(this._waiting)
+    return null;
+
     // Create Snapshot with data provided
     var snap = snapshot.create(data);
 
-    // Insert in Data Tree
-    this._currentNode = this._dataTree.insert({
+    // data
+    var snapData = {
       'id': snap._snapshotId,
       'snapshot': snap
-    });
+    };
+
+    // Insert in Data Tree
+    this._currentNode = this._currentNode ? this._dataTree.insertToNode(this._currentNode, snapData) : this._dataTree.insert(snapData);
+
 
     // Hold `this`
     var thiss = this;
@@ -8221,6 +8251,9 @@ module.exports = (function() {
 
         // Add thumbnail to thumbnail gallery
         addSnapshotToGallery(thiss, snap);
+
+        // Highlight that snapshot
+        highlightSnapshot(thiss, snap);
 
         // trigger callback
         if(callback && typeof callback === 'function')
@@ -8243,10 +8276,17 @@ module.exports = (function() {
    * @param {function} callback - triggers when {@link Trail} finishes capturing thumbnail.
    */
   Trail.prototype.captureWithDelay = function(data, selector, delay, callback) {
+
+    // Check If is Waiting
+    if(this._waiting)
+    return null;
+
+    // Set Timeout to call `capture`
     var thiss = this;
     setTimeout(function() {
-      thiss.capture(data, area, callback);
+      thiss.capture(data, selector, callback);
     }, delay);
+
   };
 
 
@@ -8262,17 +8302,28 @@ module.exports = (function() {
    */
   Trail.prototype.captureWithImage = function(data, imageDataUrl) {
 
+    // Check If is Waiting
+    if(this._waiting)
+    return null;
+
     // Create Snapshot
     var snap = snapshot.create(data, imageDataUrl);
 
-    // Insert in Data Tree
-    this._currentNode = this._dataTree.insert({
+    // data
+    var snapData = {
       'id': snap._snapshotId,
       'snapshot': snap
-    });
+    };
+
+    // Insert in Data Tree
+    this._currentNode = this._currentNode ? this._dataTree.insertToNode(this._currentNode, snapData) : this._dataTree.insert(snapData);
+
 
     // Add Image to gallery
     addSnapshotToGallery(this, snap);
+
+    // Highlight that snapshot
+    highlightSnapshot(this, snap);
 
   };
 
@@ -8459,19 +8510,40 @@ module.exports = (function() {
       };
     });
 
+    // Update Current Node in trails
+    this._currentNode =  this._dataTree._rootNode;
+
     // Hold `this`
     var thiss = this;
+
+    // Load Images Recursively
+    (function recur(node){
+      addSnapshotToGallery(thiss, node._data.snapshot);
+      if(node._childNodes.length){
+        var lastNode = node._childNodes[node._childNodes.length - 1];
+        recur(lastNode);
+      }
+    }(this._dataTree._rootNode));
 
     // Trigger `onTrailDataSetChanged` Callback
     getCallbacks(thiss, 'onTrailDataSetChanged').forEach(function(callback){
       callback();
     });
 
-    // Trigger `onSnapshotChanged` Callback
-    getCallbacks(thiss, 'onSnapshotChanged').forEach(function(callback){
-      callback(thiss._dataTree._rootNode._data.snapshot._vizData);
-    });
+    // Load Snapshot
+    this.loadSnapshot(thiss._dataTree._rootNode._data.snapshot);
 
+  };
+
+  Trail.prototype.loadSnapshot = function(_snapshot){
+    var thiss = this;
+    this.wait(function(){
+      thiss._callbacks.onSnapshotChanged.forEach(function(callback){
+        callback(_snapshot._vizData);
+      });
+      // Highlight that snapshot
+      highlightSnapshot(thiss, _snapshot);
+    });
   };
 
   Trail.prototype.wait = function(callback){
@@ -8506,13 +8578,25 @@ module.exports = (function() {
   // Callbacks and private methods
   // ------------------------------------
 
-  var addSnapshotToGallery = function(trail, snapshot) {
+  var addSnapshotToGallery = function(trail, snap) {
+
+    console.log("curr", trail._currentNode);
+
+    if(trail._currentNode._parentNode){
+      var siblings = trail._currentNode._parentNode._childNodes;
+      var recur = function(node){
+        node._childNodes.forEach(recur);
+        var element = $("#thumb-"+node._data.id);
+        if(element) element.remove();
+      };
+      siblings.forEach(recur);
+    }
 
     // Create Image element and append to gallery
     var img = $("<img>", {
-      id: 'thumb-' + snapshot._snapshotId,
+      id: 'thumb-' + snap._snapshotId,
       class: 'trails-thumbnail',
-      src: snapshot._thumbnail
+      src: snap._thumbnail
     }).appendTo(trail._controlBox.find('.trails-thumbnail-gallery'));
 
   };
@@ -8523,6 +8607,11 @@ module.exports = (function() {
         listener(data);
       });
     }
+  };
+
+  var highlightSnapshot = function(trail, snap){
+    trail._controlBox.find('.trails-thumbnail').removeClass('highlight');
+    trail._controlBox.find('#thumb-'+snap._snapshotId).addClass('highlight');
   };
 
   var getCallbacks = function(trail, name){

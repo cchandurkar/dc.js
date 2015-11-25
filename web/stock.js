@@ -22,11 +22,25 @@ var nasdaqTable = dc.dataTable('.dc-data-table');
 // Create Trail
 var trail = trails.create()
     .attr('viz', 'nasdaq-viz')
-    .addControls(['saveControl', 'loadControl'])
+    .addControls()
     .renderTo('#controls');
 
 // Capture Area
 var captureArea = '#viz-capture';
+
+gainOrLossChart.on('filtered', function(chart, filters){
+  trail.captureWithDelay({
+    chart: '#gain-loss-chart',
+    filters: chart.filters().slice()
+  }, '#gain-loss-chart', 1000);
+});
+
+quarterChart.on('filtered', function(chart, filters){
+  trail.captureWithDelay({
+    chart: '#quarter-chart',
+    filters: chart.filters().slice()
+  }, '#quarter-chart', 1000);
+});
 
 var updateFilter = function(chart, newFilters){
   chart.filters().slice().forEach(function(oldF){
