@@ -8135,6 +8135,13 @@ module.exports = (function() {
 
     this._currentNode = null;
 
+    this._callbacks = {
+      'onTrailDataSetChanged': [],
+      'onSnapshotChanged': [],
+    };
+
+    this._waiting = false;
+
   };
 
   // ------------------------------------
@@ -8452,6 +8459,47 @@ module.exports = (function() {
       };
     });
 
+    // Hold `this`
+    var thiss = this;
+
+    // Trigger `onTrailDataSetChanged` Callback
+    getCallbacks(thiss, 'onTrailDataSetChanged').forEach(function(callback){
+      callback();
+    });
+
+    // Trigger `onSnapshotChanged` Callback
+    getCallbacks(thiss, 'onSnapshotChanged').forEach(function(callback){
+      callback(thiss._dataTree._rootNode._data.snapshot._vizData);
+    });
+
+  };
+
+  Trail.prototype.wait = function(callback){
+    this._waiting = true;
+    callback();
+    this._waiting = false;
+  };
+
+  Trail.prototype.waitUntil = function(callback){
+    var thiss = this;
+    thiss._waiting = true;
+    callback(function(){
+      thiss._waiting = false;
+    });
+  };
+
+  Trail.prototype.isWaiting = function(){
+    return this._waiting;
+  };
+
+  Trail.prototype.resume = function(){
+    this._waiting = false;
+  };
+
+  Trail.prototype.listen = function(evt, callback){
+    if(this._callbacks.hasOwnProperty(evt)){
+      this._callbacks[evt].push(callback);
+    }
   };
 
   // ------------------------------------
@@ -8467,6 +8515,20 @@ module.exports = (function() {
       src: snapshot._thumbnail
     }).appendTo(trail._controlBox.find('.trails-thumbnail-gallery'));
 
+  };
+
+  var triggerCallback = function(trail, name, data){
+    if(trail._callbacks.hasOwnProperty(name)){
+      trail._callbacks[name].sync.forEach(function(listener){
+        listener(data);
+      });
+    }
+  };
+
+  var getCallbacks = function(trail, name){
+    if(trail._callbacks.hasOwnProperty(name)){
+      return trail._callbacks[name];
+    }
   };
 
   // ------------------------------------

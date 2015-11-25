@@ -28,12 +28,30 @@ var trail = trails.create()
 // Capture Area
 var captureArea = '#viz-capture';
 
-gainOrLossChart.on('filtered', function(chart, filters){
-  trail.capture({
-    chart: '#gain-loss-chart',
-    filters: chart.filters().slice()
-  }, '#gain-loss-chart');
+var updateFilter = function(chart, newFilters){
+  chart.filters().slice().forEach(function(oldF){
+     chart.filter(oldF);
+   });
+   newFilters.forEach(function(newF){
+     chart.filter(newF);
+   });
+   dc.redrawAll();
+};
+
+trail.listen('onSnapshotChanged', function(data){
+  switch (data.chart) {
+    case '#gain-loss-chart':
+      updateFilter(gainOrLossChart, data.filters.slice());
+      break;
+    case '#quarter-chart':
+      updateFilter(quarterChart, data.filters.slice());
+      break;
+    default:
+
+  }
 });
+
+
 
 
 // ### Anchor Div for Charts
