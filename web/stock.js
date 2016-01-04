@@ -19,50 +19,100 @@ var yearlyBubbleChart = dc.bubbleChart('#yearly-bubble-chart');
 var nasdaqCount = dc.dataCount('.dc-data-count');
 var nasdaqTable = dc.dataTable('.dc-data-table');
 
+
+// All Charts
+var allCharts = [gainOrLossChart, fluctuationChart, quarterChart, dayOfWeekChart, moveChart, volumeChart, yearlyBubbleChart];
+
 // Create Trail
-var trail = trails.create()
-    .attr('viz', 'nasdaq-viz')
-    .addControls()
-    .renderTo('#controls');
+var trail = jstrails.create()
+  .attr('viz', 'nasdaq-viz')
+  .attr('author', 'Chaitanya Chandurkar')
+  .addControls()
+  .renderTo('#controls');
+
+// Create Sub Trails
+var gainOrLossTrail = trail.subTrail().attr('chart', '#gain-loss-chart');
+var quarterChartTrail = trail.subTrail().attr('chart', '#quarter-chart');
+
+// Listen to Snapshot Change
+trail.addEventHandler('onSnapshotChanged', function(fromSnapshot, toSnapshot){
+  if(fromSnapshot && toSnapshot){
+    if(fromSnapshot.capturedAt() > toSnapshot.capturedAt()){
+      switch (fromSnapshot.trailId()) {
+        case quarterChartTrail.id():
+          quarterChart.filter(fromSnapshot.data().filters).redrawGroup();
+          break;
+        case gainOrLossTrail.id():
+          gainOrLossChart.filter(fromSnapshot.data().filters).redrawGroup();
+          break;
+        default:
+      }
+    } else {
+      switch (toSnapshot.trailId()) {
+        case quarterChartTrail.id():
+          quarterChart.filter(toSnapshot.data().filters).redrawGroup();
+          break;
+        case gainOrLossTrail.id():
+          gainOrLossChart.filter(toSnapshot.data().filters).redrawGroup();
+          break;
+        default:
+      }
+    }
+  }
+});
+
+
+
+var checkpoints = trail.checkpoints(function(){
+  return allCharts.map(function(chart){
+    return {
+      chartID: chart.chartID(),
+      filters: chart.filters()
+    }
+  });
+});
+
+
+// Add Checkpoint Rule
+// Level Based
+checkpoints.addRule(function(rule, snapshot){
+  return snapshot.level() % 2 === 0;
+});
+
+// Add Checkpoint Rule
+// Count Based
+checkpoints.addRule(function(rule, snapshot){
+  return ++rule._count % 5 === 0;
+}).init({ _count: 0 });
+
+
+// // Add Checkpoint Rule
+// // Size Based
+// checkpoints.addRule(function(rule, snapshot){
+//   rule._size += 2 * JSON.stringify(snapshot.data()).length;
+//   if(rule._size > rule._stepSize){
+//     rule._stepSize += 300;
+//     return true;
+//   }
+// }).init({ _size: 0, _stepSize: 300 });
 
 // Capture Area
 var captureArea = '#viz-capture';
 
 gainOrLossChart.on('filtered', function(chart, filters){
-  trail.captureWithDelay({
+  gainOrLossTrail.capture({
     chart: '#gain-loss-chart',
-    filters: chart.filters().slice()
-  }, '#gain-loss-chart', 1000);
+    chartID:  gainOrLossChart.chartID(),
+    filters: filters
+  }, captureArea, 1000);
 });
 
 quarterChart.on('filtered', function(chart, filters){
-  trail.captureWithDelay({
+  quarterChartTrail.capture({
     chart: '#quarter-chart',
-    filters: chart.filters().slice()
-  }, '#quarter-chart', 1000);
-});
-
-var updateFilter = function(chart, newFilters){
-  chart.filters().slice().forEach(function(oldF){
-     chart.filter(oldF);
-   });
-   newFilters.forEach(function(newF){
-     chart.filter(newF);
-   });
-   dc.redrawAll();
-};
-
-trail.listen('onSnapshotChanged', function(data){
-  switch (data.chart) {
-    case '#gain-loss-chart':
-      updateFilter(gainOrLossChart, data.filters.slice());
-      break;
-    case '#quarter-chart':
-      updateFilter(quarterChart, data.filters.slice());
-      break;
-    default:
-
-  }
+    chartID:  gainOrLossChart.chartID(),
+    filters: filters
+  }, captureArea, 1000);
 });
 
 
