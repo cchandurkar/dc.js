@@ -61,8 +61,18 @@ trail.addEventHandler('onSnapshotChanged', function(fromSnapshot, toSnapshot){
   }
 });
 
+// Compute The state by ID
+// Invserve Actions instead of Checkpoint to compute state of resulting
+// Default Actions
+// Overide the strategy
+// Start adn End State Manipulation
+// Defines types of inserve and forward Actions
+// GIven forward and inverse action; how to compute
+// Check Actions priorityes to update state
 
 
+
+// Setup Checkpoint Callback
 var checkpoints = trail.checkpoints(function(){
   return allCharts.map(function(chart){
     return {
@@ -80,7 +90,7 @@ checkpoints.addRule(function(rule, snapshot){
 });
 
 // Add Checkpoint Rule
-// Count Based
+// Count Basedm ru
 checkpoints.addRule(function(rule, snapshot){
   return ++rule._count % 5 === 0;
 }).init({ _count: 0 });
