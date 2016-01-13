@@ -29,7 +29,7 @@ var trail = jstrails.create()
   .addControls()
   .renderTo('#controls');
 
-// Sub Trails
+// A sub trail for every chart
 var gainOrLossChartTrail = trail.subTrail().attr('chart', '#gain-loss-chart');
 var fluctuationChartTrail = trail.subTrail().attr('chart', '#fluctuation-chart');
 var quarterChartTrail = trail.subTrail().attr('chart', '#quarter-chart');
@@ -37,9 +37,22 @@ var dayOfWeekChartTrail = trail.subTrail().attr('chart', '#day-of-week-chart');
 var moveChartTrail = trail.subTrail().attr('chart', '#monthly-move-chart');
 var yearlyBubbleChartTrail = trail.subTrail().attr('chart', '#yearly-bubble-chart');
 
-
+// Gain or loss chart filtered
 gainOrLossChart.on('filtered', function(chart, filter){
-  
+
+  // Record Changes
+  var changes = gainOrLossChartTrail.recordChanges(filter);
+
+  // Set Forward Action
+  changes.setForwardAction(function(){
+
+  });
+
+  // Set Inverse Action
+  changes.setForwardAction(function(){
+
+  });
+
 });
 
 quarterChart.on('filtered', function(chart, filters){
