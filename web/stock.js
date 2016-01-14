@@ -19,7 +19,6 @@ var yearlyBubbleChart = dc.bubbleChart('#yearly-bubble-chart');
 var nasdaqCount = dc.dataCount('.dc-data-count');
 var nasdaqTable = dc.dataTable('.dc-data-table');
 
-
 // All Charts
 var allCharts = [gainOrLossChart, fluctuationChart, quarterChart, dayOfWeekChart, moveChart, volumeChart, yearlyBubbleChart];
 
@@ -33,6 +32,27 @@ var trail = jstrails.create()
 // Create Sub Trails
 var gainOrLossTrail = trail.subTrail().attr('chart', '#gain-loss-chart');
 var quarterChartTrail = trail.subTrail().attr('chart', '#quarter-chart');
+var fluctuationChartTrail = trail.subTrail().attr('chart', '#fluctuation-chart');
+
+
+gainOrLossTrail.setInverseAction(function(snapshot){
+  gainOrLossChart.filter((function(){
+    return snapshot.data() ? snapshot.data().filters : null;
+  }())).redrawGroup();
+});
+
+quarterChartTrail.setInverseAction(function(snapshot){
+  quarterChart.filter((function(){
+    return snapshot.data() ? snapshot.data().filters : null;
+  }())).redrawGroup();
+});
+
+
+fluctuationChartTrail.setInverseAction(function(snapshot){
+  fluctuationChart.filter((function(){
+    return snapshot.prevStateFromSubTrail() ? snapshot.prevStateFromSubTrail().filters[0] : null;
+  }())).redrawGroup();
+});
 
 // Listen to Snapshot Change
 trail.addEventHandler('onSnapshotChanged', function(fromSnapshot, toSnapshot){
@@ -44,6 +64,9 @@ trail.addEventHandler('onSnapshotChanged', function(fromSnapshot, toSnapshot){
           break;
         case gainOrLossTrail.id():
           gainOrLossChart.filter(fromSnapshot.data().filters).redrawGroup();
+          break;
+        case fluctuationChartTrail.id():
+          fluctuationChart.filter(fromSnapshot.data().filters[0]).redrawGroup();
           break;
         default:
       }
@@ -70,30 +93,34 @@ trail.addEventHandler('onSnapshotChanged', function(fromSnapshot, toSnapshot){
 // GIven forward and inverse action; how to compute
 // Check Actions priorityes to update state
 
-
-
 // Setup Checkpoint Callback
-var checkpoints = trail.checkpoints(function(){
-  return allCharts.map(function(chart){
-    return {
-      chartID: chart.chartID(),
-      filters: chart.filters()
-    }
-  });
-});
+// var checkpoints = trail.checkpoints(function(){
+//   return allCharts.map(function(chart){
+//     return {
+//       chartID: chart.chartID(),
+//       filters: chart.filters()
+//     }
+//   });
+// });
 
+// var snapshotCount = 0;
+// trail.addEventHandler('onSnapshotCaptured', function(snapshot){
+//   snapshot.attr('count',  ++snapshotCount);
+//   return snapshot;
+// });
+//
+// // Add Checkpoint Rule
+// // Level Based
+// trail.checkpointManager().addRule(function(snapshot){
+//   return snapshot.level() % 2 === 0;
+// });
 
-// Add Checkpoint Rule
-// Level Based
-checkpoints.addRule(function(rule, snapshot){
-  return snapshot.level() % 2 === 0;
-});
-
-// Add Checkpoint Rule
-// Count Basedm ru
-checkpoints.addRule(function(rule, snapshot){
-  return ++rule._count % 5 === 0;
-}).init({ _count: 0 });
+//
+// // Add Checkpoint Rule
+// // Count Basedm ru
+// checkpoints.addRule(function(rule, snapshot){
+//   return ++rule._count % 5 === 0;
+// }).init({ _count: 0 });
 
 
 // // Add Checkpoint Rule
@@ -125,7 +152,13 @@ quarterChart.on('filtered', function(chart, filters){
   }, captureArea, 1000);
 });
 
-
+fluctuationChart.brush().on('brushend.trail', function(){
+  fluctuationChartTrail.capture({
+    chart: '#fluctuation-chart',
+    chartID:  fluctuationChart.chartID(),
+    filters: fluctuationChart.filters()
+  }, captureArea, 1000);
+});
 
 
 // ### Anchor Div for Charts
