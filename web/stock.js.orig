@@ -19,7 +19,6 @@ var yearlyBubbleChart = dc.bubbleChart('#yearly-bubble-chart');
 var nasdaqCount = dc.dataCount('.dc-data-count');
 var nasdaqTable = dc.dataTable('.dc-data-table');
 
-
 // All Charts
 var allCharts = [gainOrLossChart, fluctuationChart, quarterChart, dayOfWeekChart, moveChart, volumeChart, yearlyBubbleChart];
 
@@ -40,20 +39,75 @@ var yearlyBubbleChartTrail = trail.subTrail().attr('chart', '#yearly-bubble-char
 
 // Gain or loss chart filtered
 gainOrLossChart.on('filtered', function(chart, filter){
-  gainOrLossChartTrail.recordChanges(filter)
-    .captureSnapshot('#viz-capture', 1000)
-    .setForwardAction(function(){ gainOrLossChart.filter(filter); })
-    .setInverseAction(function(){ gainOrLossChart.filter(filter); })
-    .actionDone(function(){ gainOrLossChart.redrawGroup(); });
+
+<<<<<<< HEAD
+// Compute The state by ID
+// Invserve Actions instead of Checkpoint to compute state of resulting
+// Default Actions
+// Overide the strategy
+// Start adn End State Manipulation
+// Defines types of inserve and forward Actions
+// GIven forward and inverse action; how to compute
+// Check Actions priorityes to update state
+=======
+  // Record Changes
+  var changes = gainOrLossChartTrail.recordChanges(filter);
+>>>>>>> 737679ac8ce01ae719b0506d69d46d22bd86aba7
+
+  // Set Forward Action
+  changes.setForwardAction(function(){
+
+<<<<<<< HEAD
+
+// Setup Checkpoint Callback
+var checkpoints = trail.checkpoints(function(){
+  return allCharts.map(function(chart){
+    return {
+      chartID: chart.chartID(),
+      filters: chart.filters()
+    }
+=======
+>>>>>>> 737679ac8ce01ae719b0506d69d46d22bd86aba7
+  });
+
+  // Set Inverse Action
+  changes.setForwardAction(function(){
+
+  });
+
+<<<<<<< HEAD
+// Add Checkpoint Rule
+// Count Basedm ru
+checkpoints.addRule(function(rule, snapshot){
+  return ++rule._count % 5 === 0;
+}).init({ _count: 0 });
+
+
+// // Add Checkpoint Rule
+// // Size Based
+// checkpoints.addRule(function(rule, snapshot){
+//   rule._size += 2 * JSON.stringify(snapshot.data()).length;
+//   if(rule._size > rule._stepSize){
+//     rule._stepSize += 300;
+//     return true;
+//   }
+// }).init({ _size: 0, _stepSize: 300 });
+
+// Capture Area
+var captureArea = '#viz-capture';
+
+gainOrLossChart.on('filtered', function(chart, filters){
+  gainOrLossTrail.capture({
+    chart: '#gain-loss-chart',
+    chartID:  gainOrLossChart.chartID(),
+    filters: filters
+  }, captureArea, 1000);
+=======
+>>>>>>> 737679ac8ce01ae719b0506d69d46d22bd86aba7
 });
 
-// Gain or loss chart filtered
-quarterChart.on('filtered', function(chart, filter){
-  quarterChartTrail.recordChanges(filter)
-    .captureSnapshot('#viz-capture', 1000)
-    .setForwardAction(function(){ quarterChart.filter(filter); })
-    .setInverseAction(function(){ quarterChart.filter(filter); })
-    .actionDone(function(){ quarterChart.redrawGroup(); });
+quarterChart.on('filtered', function(chart, filters){
+console.log("Filters", filters, quarterChart.filters().slice());
 });
 
 
