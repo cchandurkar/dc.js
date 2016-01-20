@@ -42,7 +42,7 @@ var yearlyBubbleChartTrail = trail.subTrail().attr('chart', '#yearly-bubble-char
 // Gain or loss chart filtered
 gainOrLossChart.on('filtered', function(chart, filter){
   gainOrLossChartTrail.recordChanges(filter, function(changes){
-    changes.captureThumbnail('#viz-capture', 1000);
+    changes.captureThumbnail('#viz-capture', 1200);
     changes.setForwardAction(function(){ gainOrLossChart.filter(filter); }).done(function(){ gainOrLossChart.redrawGroup(); });
     changes.setInverseAction(function(){ gainOrLossChart.filter(filter); }).done(function(){ gainOrLossChart.redrawGroup(); });
   });
@@ -51,16 +51,16 @@ gainOrLossChart.on('filtered', function(chart, filter){
 // Fluctuation Chart
 fluctuationChart.brush().on('brushend.trail', function(){
   fluctuationChartTrail.recordChanges(fluctuationChart.filters(), function(changes){
-    changes.captureThumbnail('#viz-capture', 1000);
-    changes.setForwardAction(function(){ fluctuationChart.filter(changes.data()[0]); }).done(function(){ fluctuationChart.redrawGroup(); });
-    changes.setInverseAction(function(prevState){ fluctuationChart.filter(prevState.data() ? prevState.data()[0] : null); }).done(function(){ fluctuationChart.redrawGroup(); });
+    changes.captureThumbnail('#viz-capture', 1200);
+    changes.setForwardAction(function(){ fluctuationChart.filter(null).filter(changes.data()[0]); }).done(function(){ fluctuationChart.redrawGroup(); });
+    changes.setInverseAction(function(prevState){ fluctuationChart.filter(null).filter(prevState.data() ? prevState.data()[0] : null); }).done(function(){ fluctuationChart.redrawGroup(); });
   });
 });
 
 // Gain or loss chart filtered
 quarterChart.on('filtered', function(chart, filter){
   quarterChartTrail.recordChanges(filter, function(changes){
-    changes.captureThumbnail('#viz-capture', 1000);
+    changes.captureThumbnail('#viz-capture', 1200);
     changes.setForwardAction(function(){ quarterChart.filter(filter); }).done(function(){ quarterChart.redrawGroup(); });
     changes.setInverseAction(function(){ quarterChart.filter(filter); }).done(function(){ quarterChart.redrawGroup(); });
   });
@@ -69,7 +69,7 @@ quarterChart.on('filtered', function(chart, filter){
 // Day of the week
 dayOfWeekChart.on('filtered', function(chart, filter){
   dayOfWeekChartTrail.recordChanges(filter, function(changes){
-    changes.captureThumbnail('#viz-capture', 1000);
+    changes.captureThumbnail('#viz-capture', 1200);
     changes.setForwardAction(function(){ dayOfWeekChart.filter(filter); }).done(function(){ dayOfWeekChart.redrawGroup(); });
     changes.setInverseAction(function(){ dayOfWeekChart.filter(filter); }).done(function(){ dayOfWeekChart.redrawGroup(); });
   });
@@ -78,7 +78,7 @@ dayOfWeekChart.on('filtered', function(chart, filter){
 // Move Chart
 moveChart.on('filtered', function(chart, filter){
   moveChartTrail.recordChanges(filter, function(changes){
-    changes.captureThumbnail('#viz-capture', 1000);
+    changes.captureThumbnail('#viz-capture', 1200);
     changes.setForwardAction(function(){ volumeChart.filter(null).filter(changes.data()); }).done(function(){ volumeChart.redrawGroup(); });
     changes.setInverseAction(function(prevState){ volumeChart.filter(null).filter(prevState.data()); }).done(function(){ volumeChart.redrawGroup(); });
   });
@@ -87,7 +87,7 @@ moveChart.on('filtered', function(chart, filter){
 // Volum Chart
 volumeChart.brush().on('brushend.trail', function(){
   volumeChartTrail.recordChanges(volumeChart.filters()[0], function(changes){
-    changes.captureThumbnail('#viz-capture', 1000);
+    changes.captureThumbnail('#viz-capture', 1200);
     changes.setForwardAction(function(){ volumeChart.filter(null).filter(changes.data()); }).done(function(){ volumeChart.redrawGroup(); });
     changes.setInverseAction(function(prevState){ volumeChart.filter(null).filter(prevState.data()); }).done(function(){ volumeChart.redrawGroup(); });
   });
@@ -96,7 +96,7 @@ volumeChart.brush().on('brushend.trail', function(){
 // Bubble Chart
 yearlyBubbleChart.on('filtered', function(chart, filter){
   yearlyBubbleChartTrail.recordChanges(filter, function(changes){
-    changes.captureThumbnail('#viz-capture', 1000);
+    changes.captureThumbnail('#viz-capture', 1200);
     changes.setForwardAction(function(){ yearlyBubbleChart.filter(filter); }).done(function(){ yearlyBubbleChart.redrawGroup(); });
     changes.setInverseAction(function(){ yearlyBubbleChart.filter(filter); }).done(function(){ yearlyBubbleChart.redrawGroup(); });
   });
