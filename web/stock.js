@@ -30,32 +30,81 @@ var trail = jstrails.create()
   .addControls()
   .renderTo('#controls');
 
-// A sub trail for every chart
+// A sub trail for Gain or Loss Chart
 var gainOrLossChartTrail = trail.subTrail().attr('chart', '#gain-loss-chart');
 var fluctuationChartTrail = trail.subTrail().attr('chart', '#fluctuation-chart');
 var quarterChartTrail = trail.subTrail().attr('chart', '#quarter-chart');
 var dayOfWeekChartTrail = trail.subTrail().attr('chart', '#day-of-week-chart');
 var moveChartTrail = trail.subTrail().attr('chart', '#monthly-move-chart');
+var volumeChartTrail = trail.subTrail().attr('chart', '#monthly-volume-chart');
 var yearlyBubbleChartTrail = trail.subTrail().attr('chart', '#yearly-bubble-chart');
 
 // Gain or loss chart filtered
 gainOrLossChart.on('filtered', function(chart, filter){
-  gainOrLossChartTrail.recordChanges(filter)
-    .captureSnapshot('#viz-capture', 1000)
-    .setForwardAction(function(){ gainOrLossChart.filter(filter); })
-    .setInverseAction(function(){ gainOrLossChart.filter(filter); })
-    .actionDone(function(){ gainOrLossChart.redrawGroup(); });
+  gainOrLossChartTrail.recordChanges(filter, function(changes){
+    changes.captureThumbnail('#viz-capture', 1000);
+    changes.setForwardAction(function(){ gainOrLossChart.filter(filter); }).done(function(){ gainOrLossChart.redrawGroup(); });
+    changes.setInverseAction(function(){ gainOrLossChart.filter(filter); }).done(function(){ gainOrLossChart.redrawGroup(); });
+  });
+});
+
+// Fluctuation Chart
+fluctuationChart.brush().on('brushend.trail', function(){
+  fluctuationChartTrail.recordChanges(fluctuationChart.filters(), function(changes){
+    changes.captureThumbnail('#viz-capture', 1000);
+    changes.setForwardAction(function(){ fluctuationChart.filter(changes.data()[0]); }).done(function(){ fluctuationChart.redrawGroup(); });
+    changes.setInverseAction(function(prevState){ fluctuationChart.filter(prevState.data() ? prevState.data()[0] : null); }).done(function(){ fluctuationChart.redrawGroup(); });
+  });
 });
 
 // Gain or loss chart filtered
 quarterChart.on('filtered', function(chart, filter){
-  quarterChartTrail.recordChanges(filter)
-    .captureSnapshot('#viz-capture', 1000)
-    .setForwardAction(function(){ quarterChart.filter(filter); })
-    .setInverseAction(function(){ quarterChart.filter(filter); })
-    .actionDone(function(){ quarterChart.redrawGroup(); });
+  quarterChartTrail.recordChanges(filter, function(changes){
+    changes.captureThumbnail('#viz-capture', 1000);
+    changes.setForwardAction(function(){ quarterChart.filter(filter); }).done(function(){ quarterChart.redrawGroup(); });
+    changes.setInverseAction(function(){ quarterChart.filter(filter); }).done(function(){ quarterChart.redrawGroup(); });
+  });
 });
 
+// Day of the week
+dayOfWeekChart.on('filtered', function(chart, filter){
+  dayOfWeekChartTrail.recordChanges(filter, function(changes){
+    changes.captureThumbnail('#viz-capture', 1000);
+    changes.setForwardAction(function(){ dayOfWeekChart.filter(filter); }).done(function(){ dayOfWeekChart.redrawGroup(); });
+    changes.setInverseAction(function(){ dayOfWeekChart.filter(filter); }).done(function(){ dayOfWeekChart.redrawGroup(); });
+  });
+});
+
+// Move Chart
+moveChart.on('filtered', function(chart, filter){
+  moveChartTrail.recordChanges(filter, function(changes){
+    changes.captureThumbnail('#viz-capture', 1000);
+    changes.setForwardAction(function(){ volumeChart.filter(null).filter(changes.data()); }).done(function(){ volumeChart.redrawGroup(); });
+    changes.setInverseAction(function(prevState){ volumeChart.filter(null).filter(prevState.data()); }).done(function(){ volumeChart.redrawGroup(); });
+  });
+});
+
+// Volum Chart
+volumeChart.brush().on('brushend.trail', function(){
+  volumeChartTrail.recordChanges(volumeChart.filters()[0], function(changes){
+    changes.captureThumbnail('#viz-capture', 1000);
+    changes.setForwardAction(function(){ volumeChart.filter(null).filter(changes.data()); }).done(function(){ volumeChart.redrawGroup(); });
+    changes.setInverseAction(function(prevState){ volumeChart.filter(null).filter(prevState.data()); }).done(function(){ volumeChart.redrawGroup(); });
+  });
+});
+
+// Bubble Chart
+yearlyBubbleChart.on('filtered', function(chart, filter){
+  yearlyBubbleChartTrail.recordChanges(filter, function(changes){
+    changes.captureThumbnail('#viz-capture', 1000);
+    changes.setForwardAction(function(){ yearlyBubbleChart.filter(filter); }).done(function(){ yearlyBubbleChart.redrawGroup(); });
+    changes.setInverseAction(function(){ yearlyBubbleChart.filter(filter); }).done(function(){ yearlyBubbleChart.redrawGroup(); });
+  });
+});
+
+console.log("masterTrail", trail);
+console.log("gainOrLossChartTrail", gainOrLossChartTrail);
+console.log("quarterChartTrail", quarterChartTrail);
 
 
 
