@@ -19,7 +19,6 @@ var yearlyBubbleChart = dc.bubbleChart('#yearly-bubble-chart');
 var nasdaqCount = dc.dataCount('.dc-data-count');
 var nasdaqTable = dc.dataTable('.dc-data-table');
 
-
 // All Charts
 var allCharts = [gainOrLossChart, fluctuationChart, quarterChart, dayOfWeekChart, moveChart, volumeChart, yearlyBubbleChart];
 
@@ -29,6 +28,33 @@ var trail = jstrails.create()
   .attr('author', 'Chaitanya Chandurkar')
   .addControls()
   .renderTo('#controls');
+
+
+// Event Listener
+var count = 0;
+trail.addEventHandler('onChangesRecorded', function(changes){
+  changes._count = ++count;
+});
+
+// Create Checkpoint Manager
+trail.setCheckpointFunc(function(){
+  return allCharts.map(function(chart){
+    return {
+      chartID: chart.chartID(),
+      filters: chart.filters().slice()
+    };
+  })
+});
+
+// Add Checkpoint Rule
+trail.checkpointManager().addRule(function(changes){
+  return changes.nodeInMasterTrail()._childNodes.length > 1;
+});
+
+// Add Checkpoint Rule
+trail.checkpointManager().addRule(function(changes){
+  return changes._count && changes._count % 5 === 0;
+});
 
 // A sub trail for Gain or Loss Chart
 var gainOrLossChartTrail = trail.subTrail().attr('chart', '#gain-loss-chart');
@@ -101,10 +127,6 @@ yearlyBubbleChart.on('filtered', function(chart, filter){
     changes.setInverseAction(function(){ yearlyBubbleChart.filter(filter); }).done(function(){ yearlyBubbleChart.redrawGroup(); });
   });
 });
-
-console.log("masterTrail", trail);
-console.log("gainOrLossChartTrail", gainOrLossChartTrail);
-console.log("quarterChartTrail", quarterChartTrail);
 
 
 
@@ -759,6 +781,14 @@ d3.csv('ndx.csv', function (data) {
     // Or you can choose to redraw only those charts associated with a specific chart group
     dc.redrawAll('group');
     */
+
+
+
+    // trail.waitFor(function(){
+    //     quarterChart.filter('Q1');
+    //     quarterChart.filter('Q2');
+    //     quarterChart.redrawGroup();
+    // });
 
 });
 
