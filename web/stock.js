@@ -29,7 +29,6 @@ var trail = jstrails.create()
   .addControls()
   .renderTo('#controls');
 
-
 // Event Listener
 var count = 0;
 trail.addEventHandler('onChangesRecorded', function(changes){
@@ -46,10 +45,25 @@ trail.setCheckpointFunc(function(){
   })
 });
 
-// Add Checkpoint Rule
-trail.checkpointManager().addRule(function(changes){
-  return changes.nodeInMasterTrail()._childNodes.length > 1;
+
+trail.getCheckpointFunc(function(data){
+  console.log("Loading Checkpoint");
+  data.forEach(function(_data){
+    allCharts.forEach(function(_chart){
+      if(_chart.chartID() === _data.chartID){
+        _chart.filter(null);
+        _data.filters.forEach(function(_filter){
+          _chart.filter(_filter);
+        });
+      }
+    });
+  });
 });
+
+// Add Checkpoint Rule
+// trail.checkpointManager().addRule(function(changes){
+//   return changes.nodeInMasterTrail()._childNodes.length > 1;
+// });
 
 // Add Checkpoint Rule
 trail.checkpointManager().addRule(function(changes){
