@@ -27,6 +27,7 @@ var trail = jstrails.create()
   .attr('viz', 'nasdaq-viz')
   .attr('author', 'Chaitanya Chandurkar')
   .addControls()
+  .githubAccessToken('ac71a8f05b11cc86b9d7e496952bc4c331b6a54d')
   .renderTo('#controls');
 
 // Event Listener
@@ -35,8 +36,19 @@ trail.addEventHandler('onChangesRecorded', function(changes){
   changes._count = ++count;
 });
 
+// Save Initial State
+var initialState = allCharts.map(function(chart){
+  return {
+    chartID: chart.chartID(),
+    filters: chart.filters().slice()
+  };
+});
+
 trail.addEventHandler('onTrailLoads', function(){
-  
+  console.log("Loading");
+  allCharts.forEach(function(_chart){
+    _chart.filter(null);
+  });
 });
 
 // Create Checkpoint Manager
