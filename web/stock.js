@@ -27,7 +27,7 @@ var trail = jstrails.create()
   .attr('viz', 'nasdaq-viz')
   .attr('author', 'Chaitanya Chandurkar')
   .addControls()
-  .githubAccessToken('ac71a8f05b11cc86b9d7e496952bc4c331b6a54d')
+  .githubAccessToken('d790c31801f1495b7207294182f6cc4361b1a1ee')
   .renderTo('#controls');
 
 // Event Listener
@@ -169,6 +169,12 @@ yearlyBubbleChart.on('filtered', function(chart, filter){
     changes.captureThumbnail('#viz-capture', 1200);
   });
 });
+
+document.querySelector('#captureMe').onclick = function(){
+  trail.rasterizeAndCrop('#controls', function(img){
+    console.log("img");
+  });
+};
 
 
 
