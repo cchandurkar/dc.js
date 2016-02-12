@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<!-- saved from url=(0044)http://localhost:5555/demos/dc/web/tree.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>dc.js - Dimensional Charting Javascript Library</title>
+
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" type="text/css" href="./tree_files/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="./tree_files/dc.css">
+    <link rel="icon" type="image/x-icon" href="http://localhost:5555/demos/dc/web/tree_files/dc.logo.png">
+
+    <style>
+
+
+
+      @media print {
+        @page { margin: 0; }
+        body { margin: 1.6cm; }
+      }
+
+        #monthly-volume-chart g.y {
+            display: none;
+        }
+        #logo {
+            margin-right: 2em;
+            margin-top: 2em;
+        }
+
+    </style>
+</head>
+<body style="overflow: hidden;">
+
+<script type="text/javascript" async="" src="./tree_files/ga.js"></script><script type="text/javascript" async="" src="./tree_files/ga(1).js"></script><script type="text/javascript" src="./tree_files/jquery.min.js"></script>
+<script type="text/javascript" src="./tree_files/d3.js"></script>
+<script type="text/javascript" src="./tree_files/crossfilter.js"></script>
+<script type="text/javascript" src="./tree_files/dc.js"></script>
+<script type="text/javascript" src="./tree_files/colorbrewer.js"></script>
+
+<script type="text/javascript" src="./tree_files/jstrails.js"></script>
+<link rel="stylesheet" href="./tree_files/jstrails.css" media="all" charset="utf-8">
+
+<script type="text/javascript" src="./tree_files/stock.print.js"></script><div id="wd6b18335-edd265ebfccc52161d645b92-trails-overlay" class="trails-overlay"><div id="wd6b18335-edd265ebfccc52161d645b92-trails-overlay-inner-wrapper" class="trails-overlay-inner-wrapper"></div></div><div id="afc9eb247-86ca60a5a464672aabaaad09-trails-overlay" class="trails-overlay" style="display: block;"><div id="afc9eb247-86ca60a5a464672aabaaad09-trails-overlay-inner-wrapper" class="trails-overlay-inner-wrapper"><div id="afc9eb247-86ca60a5a464672aabaaad09-trails-overlay-tree-container" class="trails-overlay-tree-container"><svg width="790" height="590" transform="translate(10,10)"><g class="zoomable" transform="translate(-87,31)scale(1)"><path class="link" d="M395,50C395,100 185,100 185,150"></path><path class="link" d="M395,50C395,100 365,100 365,150"></path><path class="link" d="M395,50C395,100 605,100 605,150"></path><path class="link" d="M185,150C185,200 185,200 185,250"></path><path class="link" d="M185,250C185,300 185,300 185,350"></path><path class="link" d="M365,150C365,200 305,200 305,250"></path><path class="link" d="M365,150C365,200 425,200 425,250"></path><path class="link" d="M305,250C305,300 305,300 305,350"></path><path class="link" d="M305,350C305,400 305,400 305,450"></path><path class="link" d="M425,250C425,300 425,300 425,350"></path><path class="link" d="M425,350C425,400 425,400 425,450"></path><path class="link" d="M425,450C425,500 425,500 425,550"></path><path class="link" d="M605,150C605,200 545,200 545,250"></path><path class="link" d="M605,150C605,200 665,200 665,250"></path><path class="link" d="M545,250C545,300 545,300 545,350"></path><path class="link" d="M545,350C545,400 545,400 545,450"></path><path class="link" d="M665,250C665,300 665,300 665,350"></path><path class="link" d="M665,350C665,400 665,400 665,450"></path><g class="node" transform="translate(395,50)"><circle r="10" id="root-node" class="tree-node root-node"></circle><text y="-30" dy=".35em" text-anchor="middle" style="fill-opacity: 1;">Original State</text></g><g class="node" transform="translate(185,150)"><circle r="10" id="node-tf4f416ad-3ae70b83008327de2723d138" class="tree-node dest"></circle><text y="-30" dy=".35em" text-anchor="middle" style="fill-opacity: 1;">tf4f416ad</text></g><g class="node" transform="translate(185,250)"><circle r="10" id="node-c1c7e15b9-1c22b49a49ee6f8a980cca3c" class="tree-node"></circle><text y="-30" dy=".35em" text-anchor="middle" style="fill-opacity: 1;">c1c7e15b9</text></g><g class="node" transform="translate(185,350)"><circle r="10" id="node-xe60c0ed3-3e5872b622920be2e7d18512" class="tree-node"></circle><text y="30" dy=".35em" text-anchor="middle" style="fill-opacity: 1;">xe60c0ed3</text></g><g class="node" transform="translate(365,150)"><circle r="10" id="node-jd813e601-e9db42f710782798d7d870e6" class="tree-node"></circle><text y="-30" dy=".35em" text-anchor="middle" style="fill-opacity: 1;">jd813e601</text></g><g class="node" transform="translate(305,250)"><circle r="10" id="node-naa3e98df-0a43f6749b1449935f6adbce" class="tree-node checkpoint"></circle><text y="-30" dy=".35em" text-anchor="middle" style="fill-opacity: 1;">naa3e98df</text></g><g class="node" transform="translate(305,350)"><circle r="10" id="node-o327d4d91-b436c2f41cd09fd0c4e8d210" class="tree-node"></circle><text y="-30" dy=".35em" text-anchor="middle" style="fill-opacity: 1;">o327d4d91</text></g><g class="node" transform="translate(305,450)"><circle r="10" id="node-n6ca46163-da09cf0d2ff64fdc3a8cf7bc" class="tree-node"></circle><text y="30" dy=".35em" text-anchor="middle" style="fill-opacity: 1;">n6ca46163</text></g><g class="node" transform="translate(425,250)"><circle r="10" id="node-ue948dbf3-c2fc5b2fd509a758699e6984" class="tree-node"></circle><text y="-30" dy=".35em" text-anchor="middle" style="fill-opacity: 1;">ue948dbf3</text></g><g class="node" transform="translate(425,350)"><circle r="10" id="node-lcd591f2b-6d5d34897e26a9ff0ddd88ed" class="tree-node"></circle><text y="-30" dy=".35em" text-anchor="middle" style="fill-opacity: 1;">lcd591f2b</text></g><g class="node" transform="translate(425,450)"><circle r="10" id="node-rd2ff31b1-487f657001442d841be35d46" class="tree-node checkpoint"></circle><text y="-30" dy=".35em" text-anchor="middle" style="fill-opacity: 1;">rd2ff31b1</text></g><g class="node" transform="translate(425,550)"><circle r="10" id="node-c16ce7231-89595f3fe40d776501551496" class="tree-node"></circle><text y="30" dy=".35em" text-anchor="middle" style="fill-opacity: 1;">c16ce7231</text></g><g class="node" transform="translate(605,150)"><circle r="10" id="node-a1ececc79-8c136e6628c1ca84b98ad830" class="tree-node"></circle><text y="-30" dy=".35em" text-anchor="middle" style="fill-opacity: 1;">a1ececc79</text></g><g class="node" transform="translate(545,250)"><circle r="10" id="node-v2e8a3f6f-114dd1c0714715cdb40d8f35" class="tree-node"></circle><text y="-30" dy=".35em" text-anchor="middle" style="fill-opacity: 1;">v2e8a3f6f</text></g><g class="node" transform="translate(545,350)"><circle r="10" id="node-g63d793e7-f2b9fbca638e7444a304a6eb" class="tree-node"></circle><text y="-30" dy=".35em" text-anchor="middle" style="fill-opacity: 1;">g63d793e7</text></g><g class="node" transform="translate(545,450)"><circle r="10" id="node-l55e3a6ea-383121c7602edd130dd7c461" class="tree-node checkpoint"></circle><text y="30" dy=".35em" text-anchor="middle" style="fill-opacity: 1;">l55e3a6ea</text></g><g class="node" transform="translate(665,250)"><circle r="10" id="node-rd9aad192-c30207b62f719c48273469bb" class="tree-node"></circle><text y="-30" dy=".35em" text-anchor="middle" style="fill-opacity: 1;">rd9aad192</text></g><g class="node" transform="translate(665,350)"><circle r="10" id="node-lc73e4296-3cdb8c0725c0049ce23db716" class="tree-node current"></circle><text y="-30" dy=".35em" text-anchor="middle" style="fill-opacity: 1;">lc73e4296</text></g><g class="node" transform="translate(665,450)"><circle r="10" id="node-e20662451-2ceee1140c90cef9bd45a760" class="tree-node"></circle><text y="30" dy=".35em" text-anchor="middle" style="fill-opacity: 1;">e20662451</text></g></g></svg></div></div></div>
+
+
+        <style type="text/css">
+          #controls, #viz-capture{
+            -webkit-transform: scale(2); /* Safari And Chrome */
+            -webkit-transform-origin: 0 0;
+          }
+
+          #controls img{
+            height: 200px;
+            width: auto;
+          }
+
+          svg{
+            -webkit-print-color-adjust: exact;
+            -webkit-transform: scale(1.5); /* Safari And Chrome */
+            -webkit-transform-origin: 0 0;
+          }
+
+        </style>
+
+<script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-33628816-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function () {
+        var ga = document.createElement('script');
+        ga.type = 'text/javascript';
+        ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
+    })();
+</script>
+
+
+
+
+</body></html>

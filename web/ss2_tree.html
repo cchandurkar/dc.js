@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html style="-moz-user-select: none;" lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>dc.js - Dimensional Charting Javascript Library</title>
+
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" type="text/css" href="ss2_files/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="ss2_files/dc.css">
+    <link rel="icon" type="image/x-icon" href="ss2_files/dc.png">
+
+    <style>
+        #monthly-volume-chart g.y {
+            display: none;
+        }
+        #logo {
+            margin-right: 2em;
+            margin-top: 2em;
+        }
+
+    </style>
+</head>
+<body style="overflow: hidden;">
+
+<script src="ss2_files/ga.js" async="" type="text/javascript"></script><script type="text/javascript" src="ss2_files/jquery.js"></script>
+<script type="text/javascript" src="ss2_files/d3.js"></script>
+<script type="text/javascript" src="ss2_files/crossfilter.js"></script>
+<script type="text/javascript" src="ss2_files/dc.js"></script>
+<script type="text/javascript" src="ss2_files/colorbrewer.js"></script>
+
+<script type="text/javascript" src="ss2_files/jstrails.js"></script>
+<link rel="stylesheet" href="ss2_files/jstrails.css" media="all" charset="utf-8">
+
+<script type="text/javascript" src="ss2_files/stock.js"></script>
+<div style="display: block;" class="trails-overlay" id="aa0bf2cf4-3d216a493a093b60edae5783-trails-overlay"><div class="trails-overlay-inner-wrapper" id="aa0bf2cf4-3d216a493a093b60edae5783-trails-overlay-inner-wrapper"><div class="trails-overlay-tree-container" id="aa0bf2cf4-3d216a493a093b60edae5783-trails-overlay-tree-container"><svg transform="translate(10,10)" height="590" width="790"><g transform="translate(37.597426836011095,-3.9162766723082427)scale(0.7169776240079136)" class="zoomable"><path d="M395,50C395,100 175,100 175,150" class="link"></path><path d="M395,50C395,100 435,100 435,150" class="link"></path><path d="M395,50C395,100 615,100 615,150" class="link"></path><path d="M175,150C175,200 95,200 95,250" class="link"></path><path d="M175,150C175,200 255,200 255,250" class="link"></path><path d="M95,250C95,300 95,300 95,350" class="link"></path><path d="M95,350C95,400 55,400 55,450" class="link"></path><path d="M95,350C95,400 135,400 135,450" class="link"></path><path d="M135,450C135,500 135,500 135,550" class="link"></path><path d="M255,250C255,300 255,300 255,350" class="link"></path><path d="M255,350C255,400 255,400 255,450" class="link"></path><path d="M255,450C255,500 255,500 255,550" class="link"></path><path d="M435,150C435,200 375,200 375,250" class="link"></path><path d="M435,150C435,200 495,200 495,250" class="link"></path><path d="M375,250C375,300 375,300 375,350" class="link"></path><path d="M495,250C495,300 495,300 495,350" class="link"></path><path d="M495,350C495,400 495,400 495,450" class="link"></path><path d="M615,150C615,200 615,200 615,250" class="link"></path><g transform="translate(395,50)" class="node"><circle class="tree-node root-node" id="root-node" r="10"></circle><text style="fill-opacity: 1;" text-anchor="middle" dy=".35em" y="-30">Original State</text></g><g transform="translate(175,150)" class="node"><circle class="tree-node" id="node-q8d0ec605-878f3e10f41de51946a91855" r="10"></circle><text style="fill-opacity: 1;" text-anchor="middle" dy=".35em" y="-30">q8d0ec605</text></g><g transform="translate(95,250)" class="node"><circle class="tree-node" id="node-lae2e401b-3635182e073e624949260640" r="10"></circle><text style="fill-opacity: 1;" text-anchor="middle" dy=".35em" y="-30">lae2e401b</text></g><g transform="translate(95,350)" class="node"><circle class="tree-node" id="node-ya0b075ee-2e8fb1d4f4ef44d78dfe4e9c" r="10"></circle><text style="fill-opacity: 1;" text-anchor="middle" dy=".35em" y="-30">ya0b075ee</text></g><g transform="translate(55,450)" class="node"><circle class="tree-node dest" id="node-d37344b4d-bd38dc8a77e1e7c6a24b8166" r="10"></circle><text style="fill-opacity: 1;" text-anchor="middle" dy=".35em" y="30">d37344b4d</text></g><g transform="translate(135,450)" class="node"><circle class="tree-node checkpoint" id="node-f442e394a-80044f443ccf4b3d3ec2e81d" r="10"></circle><text style="fill-opacity: 1;" text-anchor="middle" dy=".35em" y="-30">f442e394a</text></g><g transform="translate(135,550)" class="node"><circle class="tree-node" id="node-fa870dc54-633fd7775306cb23b3a4a8f6" r="10"></circle><text style="fill-opacity: 1;" text-anchor="middle" dy=".35em" y="30">fa870dc54</text></g><g transform="translate(255,250)" class="node"><circle class="tree-node checkpoint" id="node-j3bcac948-cdbd1b33fdcf8b79c45e7686" r="10"></circle><text style="fill-opacity: 1;" text-anchor="middle" dy=".35em" y="-30">j3bcac948</text></g><g transform="translate(255,350)" class="node"><circle class="tree-node" id="node-d35e04635-2a2c6b411ddd8a011f8b4d9d" r="10"></circle><text style="fill-opacity: 1;" text-anchor="middle" dy=".35em" y="-30">d35e04635</text></g><g transform="translate(255,450)" class="node"><circle class="tree-node" id="node-m0beb0a16-165b599dd2b3894962bdc4eb" r="10"></circle><text style="fill-opacity: 1;" text-anchor="middle" dy=".35em" y="-30">m0beb0a16</text></g><g transform="translate(255,550)" class="node"><circle class="tree-node" id="node-f4c2dd2b3-61d8cddb3271cbf5cb4b1e1c" r="10"></circle><text style="fill-opacity: 1;" text-anchor="middle" dy=".35em" y="30">f4c2dd2b3</text></g><g transform="translate(435,150)" class="node"><circle class="tree-node" id="node-f5c9faaf2-e9bfe58c1c0474ea61ade515" r="10"></circle><text style="fill-opacity: 1;" text-anchor="middle" dy=".35em" y="-30">f5c9faaf2</text></g><g transform="translate(375,250)" class="node"><circle class="tree-node checkpoint" id="node-g99afcbbd-eca8f158a8704961734872ba" r="10"></circle><text style="fill-opacity: 1;" text-anchor="middle" dy=".35em" y="-30">g99afcbbd</text></g><g transform="translate(375,350)" class="node"><circle class="tree-node" id="node-h11f3c705-56b1451b0283200bcdf884a5" r="10"></circle><text style="fill-opacity: 1;" text-anchor="middle" dy=".35em" y="30">h11f3c705</text></g><g transform="translate(495,250)" class="node"><circle class="tree-node" id="node-ze9cbd068-511e44d98c638bb2f28472a4" r="10"></circle><text style="fill-opacity: 1;" text-anchor="middle" dy=".35em" y="-30">ze9cbd068</text></g><g transform="translate(495,350)" class="node"><circle class="tree-node" id="node-i8758b83c-c81cb62285054cd3cb250403" r="10"></circle><text style="fill-opacity: 1;" text-anchor="middle" dy=".35em" y="-30">i8758b83c</text></g><g transform="translate(495,450)" class="node"><circle class="tree-node" id="node-g33b14e57-ef82e833fcfc98e887d01fcc" r="10"></circle><text style="fill-opacity: 1;" text-anchor="middle" dy=".35em" y="30">g33b14e57</text></g><g transform="translate(615,150)" class="node"><circle class="tree-node checkpoint" id="node-tecba54ff-288c7d571b77b945eef0ea1f" r="10"></circle><text style="fill-opacity: 1;" text-anchor="middle" dy=".35em" y="-30">tecba54ff</text></g><g transform="translate(615,250)" class="node"><circle class="tree-node current" id="node-w580c3f92-8b9dd2b846433c5773924dd8" r="10"></circle><text style="fill-opacity: 1;" text-anchor="middle" dy=".35em" y="30">w580c3f92</text></g></g></svg></div></div></div>
+
+        <style type="text/css">
+
+
+              @media print {
+                @page { margin: 0; }
+                body { margin: 1.6cm; }
+              }
+
+              svg{
+                margin-left:-500px;
+                -webkit-print-color-adjust: exact;
+                -webkit-transform: scale(2); /* Safari And Chrome */
+                -webkit-transform-origin: 0 0;
+              }
+
+          #controls{
+            -webkit-transform: scale(2); /* Safari And Chrome */
+            -webkit-transform-origin: 0 0;
+          }
+
+          #controls img{
+            height: 200px;
+            width: auto;
+          }
+
+        </style>
+
+<script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-33628816-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function () {
+        var ga = document.createElement('script');
+        ga.type = 'text/javascript';
+        ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
+    })();
+</script>
+
+
+
+</body></html>
